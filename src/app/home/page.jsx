@@ -11,7 +11,7 @@ export default function Page() {
   const [reveal, setReveal] = useState(false);
 
   // PIN correcto: 10-06 (formato MM-DD)
-  const CORRECT_PIN = "06-10";
+  const CORRECT_PIN = "0610";
 
   // ✅ Pon aquí tus rutas (public/...)
   const media = useMemo(
@@ -121,7 +121,7 @@ export default function Page() {
               </p>
 
               <p className="mt-2 text-sm text-white/50">
-                Formato: <span className="text-cyan-300">DD-MM</span> (día y
+                Formato: <span className="text-cyan-300">DDMM</span> (día y
                 mes)
               </p>
             </div>
