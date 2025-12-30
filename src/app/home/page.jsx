@@ -247,6 +247,8 @@ function Footer() {
       <p className="text-sm">
         Hecho con cariño, con nervios… y con ganas de sacarte una sonrisa. 🌙
       </p>
+      {/* mensajito */}
+      <p className="mt-2 text-xs">Por cierto, sí leí tu correo.</p>
     </footer>
   );
 }
