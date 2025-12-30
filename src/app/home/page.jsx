@@ -102,7 +102,7 @@ function Header({ reveal, setReveal }) {
       <Badge text="Solo para ti ✨" />
 
       <h2 className="mt-5 text-3xl sm:text-5xl font-semibold leading-tight">
-        Ha sido difícil, lo sé… y has quedado en mi mente.
+        Ha sido difícil todo, lo sé… pero has quedado en mis pensamientos.
       </h2>
 
       <p className="mt-4 max-w-2xl text-white/75 leading-relaxed">
@@ -251,6 +251,7 @@ function Footer() {
       <p className="text-sm">
         Hecho con cariño, con nervios… y con ganas de sacarte una sonrisa. 🌙
       </p>
+      <p className="mt-2 text-sm">PD: Sí leí tu correo.</p>
     </footer>
   );
 }
