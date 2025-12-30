@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 
 export default function Page() {
-  const [phase] = useState("content"); // Eliminado "pin" e "intro"
+  const [phase, setPhase] = useState("intro"); // Cambiado a "intro" primero
+  const [introFade, setIntroFade] = useState(false);
   const [contentFadeIn, setContentFadeIn] = useState(false);
   const [reveal, setReveal] = useState(false);
 
@@ -28,17 +29,50 @@ export default function Page() {
   );
 
   useEffect(() => {
-    // Mostrar contenido directamente con animación
-    const timer = setTimeout(() => {
+    // Iniciar la secuencia de intro automáticamente
+    const t1 = setTimeout(() => setIntroFade(true), 3400);
+    const t2 = setTimeout(() => {
+      setPhase("content");
       setContentFadeIn(true);
-    }, 300);
+    }, 4000);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
   }, []);
 
   return (
     <main className="min-h-screen relative overflow-hidden bg-[#07040f] text-white">
       <AnimatedBackdrop />
+
+      {/* Intro */}
+      {phase === "intro" && (
+        <section
+          className={[
+            "fixed inset-0 z-50 flex items-center justify-center",
+            "transition-opacity duration-700 ease-out",
+            introFade ? "opacity-0 pointer-events-none" : "opacity-100",
+          ].join(" ")}
+          aria-label="Intro"
+        >
+          <div className="text-center px-6">
+            <p className="text-xs tracking-[0.35em] uppercase text-white/70">
+              Solo para ti
+            </p>
+
+            <h1 className="mt-4 text-3xl sm:text-5xl font-semibold leading-tight">
+              ¿Creíste que me olvidé de ti?
+            </h1>
+
+            <div className="mt-8 flex items-center justify-center gap-2 text-white/70">
+              <span className="h-2 w-2 rounded-full bg-white/60 animate-pulse" />
+              <span className="h-2 w-2 rounded-full bg-white/60 animate-pulse [animation-delay:150ms]" />
+              <span className="h-2 w-2 rounded-full bg-white/60 animate-pulse [animation-delay:300ms]" />
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Contenido principal */}
       {phase === "content" && (
@@ -60,13 +94,15 @@ export default function Page() {
   );
 }
 
+// Los demás componentes se mantienen igual...
+
 function Header({ reveal, setReveal }) {
   return (
     <header className="flex flex-col items-center text-center">
       <Badge text="Solo para ti ✨" />
 
       <h2 className="mt-5 text-3xl sm:text-5xl font-semibold leading-tight">
-       Señorita Tatiana! Ha sido difícil, sí lo sé… pero has quedado en mi mente.
+        Ha sido difícil, lo sé… y has quedado en mi mente.
       </h2>
 
       <p className="mt-4 max-w-2xl text-white/75 leading-relaxed">
