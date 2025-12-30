@@ -3,15 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 
 export default function Page() {
-  const [phase, setPhase] = useState("pin"); // "pin" | "intro" | "content"
-  const [pin, setPin] = useState("");
-  const [error, setError] = useState("");
-  const [introFade, setIntroFade] = useState(false);
+  const [phase] = useState("content"); // Eliminado "pin" e "intro"
   const [contentFadeIn, setContentFadeIn] = useState(false);
   const [reveal, setReveal] = useState(false);
-
-  // PIN correcto: 10-06 (formato MM-DD)
-  const CORRECT_PIN = "0610";
 
   // ✅ Pon aquí tus rutas (public/...)
   const media = useMemo(
@@ -33,194 +27,18 @@ export default function Page() {
     []
   );
 
-  const handlePinSubmit = (e) => {
-    e.preventDefault();
+  useEffect(() => {
+    // Mostrar contenido directamente con animación
+    const timer = setTimeout(() => {
+      setContentFadeIn(true);
+    }, 300);
 
-    if (pin === CORRECT_PIN) {
-      setError("");
-      setPhase("intro");
-
-      // Iniciar la secuencia de intro
-      const t1 = setTimeout(() => setIntroFade(true), 3400);
-      const t2 = setTimeout(() => {
-        setPhase("content");
-        setContentFadeIn(true);
-      }, 4000);
-
-      return () => {
-        clearTimeout(t1);
-        clearTimeout(t2);
-      };
-    } else {
-      setError("PIN incorrecto. Intenta de nuevo.");
-      // Limpiar el error después de 3 segundos
-      setTimeout(() => setError(""), 3000);
-    }
-  };
-
-  const handleKeyDown = (e) => {
-    // Permitir solo números y guion
-    const allowedKeys = [
-      "0",
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "-",
-      "Backspace",
-      "Delete",
-      "ArrowLeft",
-      "ArrowRight",
-      "Tab",
-    ];
-
-    if (!allowedKeys.includes(e.key) && !e.ctrlKey && !e.metaKey) {
-      e.preventDefault();
-    }
-
-    // Auto-formato MM-DD
-    if (
-      e.key >= "0" &&
-      e.key <= "9" &&
-      pin.length === 2 &&
-      !pin.includes("-")
-    ) {
-      setPin((prev) => prev + "-");
-    }
-  };
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <main className="min-h-screen relative overflow-hidden bg-[#07040f] text-white">
       <AnimatedBackdrop />
-
-      {/* Pantalla de PIN */}
-      {phase === "pin" && (
-        <section className="fixed inset-0 z-50 flex items-center justify-center px-6">
-          <div className="w-full max-w-md">
-            <div className="text-center mb-10">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/7 px-4 py-2 text-xs text-white/75 backdrop-blur mb-6">
-                <span className="h-2 w-2 rounded-full bg-white/60" />
-                Acceso privado
-              </div>
-
-              <h1 className="text-3xl sm:text-4xl font-semibold leading-tight">
-                ¡Señorita Tatiana!
-              </h1>
-
-              <p className="mt-3 text-white/70">
-                Para recordarte lo especial que eres, necesito que ingreses
-                <br />
-                <span className="text-fuchsia-300 font-medium">
-                  una fecha importante
-                </span>
-              </p>
-
-              <p className="mt-2 text-sm text-white/50">
-                Formato: <span className="text-cyan-300">DDMM</span> (día y
-                mes)
-              </p>
-            </div>
-
-            <form onSubmit={handlePinSubmit} className="space-y-6">
-              <div className="relative">
-                <input
-                  type="text"
-                  value={pin}
-                  onChange={(e) => setPin(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder="__-__"
-                  maxLength={5}
-                  className="w-full px-6 py-4 text-2xl text-center tracking-widest bg-white/5 border border-white/15 rounded-2xl 
-             backdrop-blur placeholder:text-white/20 placeholder:tracking-[0.3em] focus:outline-none focus:border-fuchsia-400/50 
-             focus:ring-2 focus:ring-fuchsia-400/20 transition-all"
-                  autoComplete="off"
-                  autoFocus
-                />
-                <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-                  {/* <div className="text-2xl tracking-[0.5em] text-white/20">
-                    {pin.padEnd(5, "_").replace(/_/g, " ")}
-                  </div> */}
-                </div>
-              </div>
-
-              {error && (
-                <div className="text-center animate-pulse">
-                  <p className="text-red-400/80 text-sm bg-red-400/10 py-2 px-4 rounded-xl border border-red-400/20">
-                    ❌ {error}
-                  </p>
-                </div>
-              )}
-
-              <div className="space-y-3">
-                <button
-                  type="submit"
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-fuchsia-500/80 to-cyan-400/80 
-                           hover:from-fuchsia-500 hover:to-cyan-400 text-white font-medium
-                           transition-all duration-300 shadow-lg shadow-fuchsia-500/20"
-                >
-                  Ingresar
-                </button>
-
-                <div className="text-center">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      // Pista sutil
-                      setPin("10-");
-                      setError("💡 ¿Día y mes de mi cumple?");
-                      setTimeout(() => setError(""), 4000);
-                    }}
-                    className="text-xs text-white/50 hover:text-white/70 transition-colors"
-                  >
-                    ¿Necesitas una pista?
-                  </button>
-                </div>
-              </div>
-
-              <div className="pt-6 border-t border-white/10 text-center">
-                <p className="text-xs text-white/40">
-                  Esta página está protegida porque contiene
-                  <br />
-                  mensajes especiales para alguien especial ✨
-                </p>
-              </div>
-            </form>
-          </div>
-        </section>
-      )}
-
-      {/* Intro */}
-      {phase === "intro" && (
-        <section
-          className={[
-            "fixed inset-0 z-50 flex items-center justify-center",
-            "transition-opacity duration-700 ease-out",
-            introFade ? "opacity-0 pointer-events-none" : "opacity-100",
-          ].join(" ")}
-          aria-label="Intro"
-        >
-          <div className="text-center px-6">
-            <p className="text-xs tracking-[0.35em] uppercase text-white/70">
-              Solo para ti
-            </p>
-
-            <h1 className="mt-4 text-3xl sm:text-5xl font-semibold leading-tight">
-              ¿Creíste que me olvidé de ti?
-            </h1>
-
-            <div className="mt-8 flex items-center justify-center gap-2 text-white/70">
-              <span className="h-2 w-2 rounded-full bg-white/60 animate-pulse" />
-              <span className="h-2 w-2 rounded-full bg-white/60 animate-pulse [animation-delay:150ms]" />
-              <span className="h-2 w-2 rounded-full bg-white/60 animate-pulse [animation-delay:300ms]" />
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* Contenido principal */}
       {phase === "content" && (
@@ -242,16 +60,13 @@ export default function Page() {
   );
 }
 
-// Los componentes Header, Gallery, MediaCard, Footer, Badge y AnimatedBackdrop
-// se mantienen exactamente igual que en tu código anterior...
-
 function Header({ reveal, setReveal }) {
   return (
     <header className="flex flex-col items-center text-center">
       <Badge text="Solo para ti ✨" />
 
       <h2 className="mt-5 text-3xl sm:text-5xl font-semibold leading-tight">
-        Ha sido difícil, lo sé… y has quedado en mi mente.
+       Señorita Tatiana! no ha sido difícil, lo sé… y has quedado en mi mente.
       </h2>
 
       <p className="mt-4 max-w-2xl text-white/75 leading-relaxed">
