@@ -66,7 +66,7 @@ function Header({ reveal, setReveal }) {
       <Badge text="Solo para ti ✨" />
 
       <h2 className="mt-5 text-3xl sm:text-5xl font-semibold leading-tight">
-       Señorita Tatiana! no ha sido difícil, lo sé… y has quedado en mi mente.
+       Señorita Tatiana! Ha sido difícil, sí lo sé… pero has quedado en mi mente.
       </h2>
 
       <p className="mt-4 max-w-2xl text-white/75 leading-relaxed">
